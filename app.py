@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import json
+import pandas as pd
 
 # Configuración de claves de API desde los secretos
 TOGETHER_API_KEY = st.secrets["together"]["api_key"]
@@ -50,21 +51,31 @@ def buscar_regulaciones_guatemala():
     else:
         return "Error en la búsqueda de regulaciones"
 
+# Función para leer el archivo xlsx y convertirlo a texto
+def leer_archivo_xlsx(file):
+    df = pd.read_excel(file)
+    return df.to_string(index=False)
+
 # Título de la aplicación
 st.title("Verificación de Estados Financieros según las Regulaciones de Guatemala")
 
-# Formulario para ingresar estados financieros
-st.header("Ingresar Estados Financieros")
-financial_statements = st.text_area("Escribe los estados financieros que deseas verificar")
+# Subida de archivo Excel para los estados financieros
+st.header("Sube tus Estados Financieros en formato Excel (.xlsx)")
+uploaded_file = st.file_uploader("Subir archivo .xlsx", type=["xlsx"])
 
-# Botón para verificar los estados financieros
-if st.button("Verificar Estados Financieros"):
-    if financial_statements:
+if uploaded_file is not None:
+    # Leer el archivo y convertir a texto
+    financial_statements = leer_archivo_xlsx(uploaded_file)
+    st.subheader("Contenido del Archivo Subido")
+    st.write(financial_statements)
+
+    # Botón para verificar los estados financieros
+    if st.button("Verificar Estados Financieros"):
         resultado_verificacion = verificar_estado_financiero(financial_statements)
         st.subheader("Resultado de la Verificación")
         st.write(resultado_verificacion)
-    else:
-        st.error("Por favor, ingresa los estados financieros")
+else:
+    st.error("Por favor, sube un archivo .xlsx")
 
 # Botón para obtener información adicional sobre regulaciones
 st.header("Buscar Regulaciones Contables en Guatemala")
