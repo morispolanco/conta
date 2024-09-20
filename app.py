@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Título de la aplicación
-st.title('Aplicación para Contadores de Guatemala')
+st.title('Aplicación para Contadores de Guatemala') 
 
 # Sección para el cálculo de IVA
 st.header('Cálculo de IVA (Impuesto al Valor Agregado)')
